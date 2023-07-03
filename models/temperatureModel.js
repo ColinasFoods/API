@@ -6,6 +6,7 @@ const temperatureSchema = mongoose.Schema(
             type:String,
             required:true,
         },
+        
         temperature:{
             type: Number,
             required:true,
