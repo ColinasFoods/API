@@ -20,8 +20,13 @@ const temperatureSchema = mongoose.Schema(
         },
         doorTimeOpen:{
             type: Number,
-            required: false,
+            required: true,
             default: 0
+        },
+        time:{
+            type:String,
+            required:true,
+            default: "00:00"
         }
         
         
