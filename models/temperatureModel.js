@@ -21,12 +21,20 @@ const temperatureSchema = mongoose.Schema(
             type: Number,
             required: false,
             default: 0
+        },
+        previousTemperatures: {
+            type: [Number],
+            required: false,
+            default: [],
+        },
+        time: {
+            type: [Number],
+            required: false,
+            default: [],
         }
-        
-        
     },
     {
-        timestamps: true
+        timestamps: false
     }
 )
 

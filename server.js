@@ -49,36 +49,61 @@ app.get('/temperature/:id', async(req,res) => {
     }
 })
 
-app.post('/temperature', async(req, res) =>{
+app.post('/temperature', async (req, res) => {
     try {
-        
-        const temperature = await Temperature.create(req.body)
-        res.status(200).json(temperature)
-
+      const currentTime = new Date(); // Get the current time
+      req.body.time = currentTime; // Add the current time to the request body
+  
+      const temperature = await Temperature.create(req.body);
+      res.status(200).json(temperature);
     } catch (error) {
-        console.log(error.message)
-        res.status(500).json({message: error.message})
+      console.log(error.message);
+      res.status(500).json({ message: error.message });
     }
-})
+  });
+  
 
 
 //update a temperature
 
-app.put('/temperature/:id', async(req,res) => {
+app.put('/temperature/:id', async (req, res) => {
     try {
-        const {id} = req.params;
-        const temperature = await Temperature.findByIdAndUpdate(id, req.body);
-        if(!temperature){
-            //we cannot find anyproduct in database
-            return res.status(404).json({message: 'cannot find temperature with this ID'})
+      const { id } = req.params;
+      const updatedTemperature = req.body;
+  
+      const currentTime = new Date(); // Get the current time
+      updatedTemperature.time = currentTime; // Add the current time to the updated temperature object
+  
+      // Find the temperature document by ID
+      const temperature = await Temperature.findById(id);
+  
+      if (!temperature) {
+        return res.status(404).json({ message: 'Cannot find temperature with this ID' });
+      }
+  
+      const existingData = await Temperature.find();
+      for (let i = 0; i < existingData.length; i++) {
+        const data = existingData[i];
+  
+        if (data.id !== id) {
+          data.previousTemperatures.push(temperature.temperature);
+          await data.save();
         }
-        const updatedTemperature = await Temperature.findById(id)
-        res.status(200).json(updatedTemperature);
+      }
+  
+      temperature.previousTemperatures.push(updatedTemperature.temperature);
+      await temperature.save();
+  
+      await temperature.updateOne(updatedTemperature);
+  
+      res.status(200).json(updatedTemperature);
     } catch (error) {
-
-        res.status(500).json({message: error.message})
+      res.status(500).json({ message: error.message });
     }
-})
+  });
+  
+  
+  
 
 //delete temperature
 
