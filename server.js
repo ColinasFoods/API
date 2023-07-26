@@ -126,8 +126,10 @@ const port = 3000;
 
 mongoose.set("strictQuery",false)
 
+const uri = 'mongodb+srv://gulin:fart@gulinapi.4oqs4mi.mongodb.net/Node-API?retryWrites=true&w=majority'
+
 mongoose.
-connect('mongodb+srv://gulin:fart@gulinapi.4oqs4mi.mongodb.net/Node-API?retryWrites=true&w=majority')
+connect(uri)
 .then(() => {
     console.log('connected to mongodb')
     app.listen(port,()=> {
